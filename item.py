@@ -1,7 +1,6 @@
 class Item:
     def __init__(self,item_dict):
         attributes =["number","name","description","qty","location"]
-        self._name = item_dict["name"].lower()
         """Attributes val can be None if dict not passed in right"""
         self._item_dict = {}
         for attribute in attributes:
@@ -22,8 +21,24 @@ class Item:
     
     @property
     def name(self):
-        return self._name
+        return self._item_dict["name"]
+
+    @property
+    def qty(self):
+        return self._item_dict["qty"]
     
+    @property
+    def number(self):
+        return self._item_dict["number"]
+
+    @property
+    def description(self):
+        return self._item_dict["description"]
+
+    @property
+    def location(self):
+        return self._item_dict["location"]
+
     def __repr__(self):
         attributes =["number","name","description","qty","location"]
         describing_string = ""
