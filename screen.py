@@ -57,3 +57,11 @@ class Screen(abc.ABC):
     @abc.abstractmethod
     def entries(self):
         pass
+
+    @abc.abstractmethod
+    def focus(self):
+        pass
+
+    @abc.abstractmethod
+    def clear(self):
+        pass

@@ -86,3 +86,8 @@ class Transaction_Screen(screen.Screen):
     def button_finalize(self):
         self._screen_changer("main_menu")
     
+    def clear(self):
+        pass
+
+    def focus(self):
+        pass

@@ -11,7 +11,7 @@ class Main_Menu_Screen(screen.Screen):
         button = tk.Button(self._screen, text="Search Items",command=self.button_search, width=20,height=2)
         button.pack(pady=10)
         # Inv. Mgmt button
-        button = tk.Button(self._screen, text="Inv. Management", width=20,height=2)
+        button = tk.Button(self._screen, text="Inv. Management",command=self.button_inv_mgmt, width=20,height=2)
         button.pack(pady=10)
         # Transaction button
         button = tk.Button(self._screen, text="Transaction",command=self.button_transaction, width=20,height=2)
@@ -29,6 +29,9 @@ class Main_Menu_Screen(screen.Screen):
     def button_search(self):
         self._screen_changer("search")
 
+    def button_inv_mgmt(self):
+        self._screen_changer("inv_mgmt")
+    
     @property
     def entries(self):
         entries = []
@@ -38,3 +41,9 @@ class Main_Menu_Screen(screen.Screen):
     def results(self):
         results = []
         return results
+
+    def focus(self):
+        pass
+
+    def clear(self):
+        pass
