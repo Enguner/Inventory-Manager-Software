@@ -8,7 +8,7 @@ class Main_Menu_Screen(screen.Screen):
 
         tk.Label(self._screen, text="Inventory System").pack(pady=30)
         # Search button
-        button = tk.Button(self._screen, text="Search Items", width=20,height=2)
+        button = tk.Button(self._screen, text="Search Items",command=self.button_search, width=20,height=2)
         button.pack(pady=10)
         # Inv. Mgmt button
         button = tk.Button(self._screen, text="Inv. Management", width=20,height=2)
@@ -26,6 +26,15 @@ class Main_Menu_Screen(screen.Screen):
     def button_transaction(self):
         self._screen_changer("transaction")
 
-    def handle_events(self):
-        pass
-    
+    def button_search(self):
+        self._screen_changer("search")
+
+    @property
+    def entries(self):
+        entries = []
+        return entries
+
+    @property
+    def results(self):
+        results = []
+        return results

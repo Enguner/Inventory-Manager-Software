@@ -70,8 +70,19 @@ class Transaction_Screen(screen.Screen):
         self._trans_total_items.pack()
 
         # Conf. Buttons
-        tk.Button(conf_buttons_col,text="Finalize",width=8,height=8).pack(pady=20)
+        tk.Button(conf_buttons_col,text="Finalize",width=8,command=self.button_finalize,height=8).pack(pady=20)
         tk.Button(conf_buttons_col,text="Void all",width=8,height=8).pack(pady=20)
+    
+    @property
+    def entries(self):
+        entries = []
+        return entries
 
-    def handle_events(self):
-        pass
+    @property
+    def results(self):
+        results = []
+        return results
+
+    def button_finalize(self):
+        self._screen_changer("main_menu")
+    

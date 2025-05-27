@@ -2,36 +2,45 @@ import item
 
 class Inventory:
     _file = "items.txt"
+    _intstance = None
+    _initialized = False
+
+    def __new__(cls, *args):
+        if cls._intstance is None:
+            cls._intstance = super().__new__(cls)
+        return cls._intstance
 
     def __init__(self):
-        self._items = {}
-        
-        try:
-            file = open(self._file,"r")
+        if not Inventory._initialized:
+            self._items = {}
+            try:
+                file = open(Inventory._file,"r")
+                
+            except FileNotFoundError:
+                file = open(Inventory._file,"w")
+                file.close()
+                file = open(Inventory._file,"r")
             
-        except FileNotFoundError:
-            file = open(self._file,"w")
+            contents = file.read()
             file.close()
-            file = open(self._file,"r")
-        
-        contents = file.read()
-        file.close()
-        if len(contents) == 0:
-            pass
-        else:
-            contents = contents.split("\n")
-            keys = ["number","name","description","qty","location"]
-            item_dict = {}
+            if len(contents) == 0:
+                pass
+            else:
+                contents = contents.split("\n")
+                keys = ["number","name","description","qty","location"]
+                item_dict = {}
 
-            for entry in contents:
-                if entry.strip() == "":
-                    continue
-                i = 0
-                entry = entry.split(",")
-                for key in entry:
-                    item_dict[keys[i]] = key
-                    i+=1 
-                self._items[item_dict["number"]] = item.Item(item_dict)
+                for entry in contents:
+                    if entry.strip() == "":
+                        continue
+                    i = 0
+                    entry = entry.split(",")
+                    for key in entry:
+                        item_dict[keys[i]] = key
+                        i+=1 
+                    self._items[item_dict["number"]] = item.Item(item_dict)
+        Inventory._initialized = True
+        
 
     def __getitem__(self,key):
         item_numbers = self.item_numbers
@@ -80,7 +89,7 @@ class Inventory:
         return results
     
     def save(self):
-        file = open(self._file,'w')
+        file = open(Inventory._file,'w')
         item_numbers = self.item_numbers
         for entry in item_numbers:
             file.write(repr(self._items[entry]))
