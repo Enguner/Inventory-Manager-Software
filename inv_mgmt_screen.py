@@ -54,12 +54,21 @@ class Inv_Mgmt_Screen(screen.Screen):
 
 
     # Buttons
+    def modify_item_button(self):
+        def valid_entry(string):
+            pass
+
+
+        selected = self._inv_results_listbox.curselection() # Set variable to selected of list box
+        if selected: # There is something selected
+            selected = selected[0]
+            self.modify_item_popup()
+        else: # Nothing is selected
+            messagebox.showwarning("No Item Selected","You need to have an item selected to modify its details!")
+            
 
     def add_item_button(self):
         self.add_item_popup()
-
-    def modify_item_button(self):
-        pass
 
     def delete_item_button(self):
         def is_valid(string):
@@ -204,6 +213,65 @@ class Inv_Mgmt_Screen(screen.Screen):
 
         popup = tk.Toplevel(self._screen)
         popup.title("Add Item")
+        popup.geometry("450x300")
+        # Various frames needed 
+        frame_item_name = tk.Frame(popup)
+        frame_item_name.pack()
+
+        frame_item_description = tk.Frame(popup)
+        frame_item_description.pack()
+
+        frame_item_qty = tk.Frame(popup)
+        frame_item_qty.pack()
+
+        frame_item_location = tk.Frame(popup)
+        frame_item_location.pack()
+
+        frame_action_buttons = tk.Frame(popup)
+        frame_action_buttons.pack()
+
+        # Item name widgets
+        tk.Label(frame_item_name, text="Add item name: ").pack(side="left")
+        item_name_entry = tk.Entry(frame_item_name)
+        item_name_entry.pack(side="left")
+
+        # Item Name error message
+        item_name_error = tk.Label(frame_item_name,text="")
+        item_name_error.pack(side="left")
+
+        # Item description widgets
+        tk.Label(frame_item_description,text="Item description:").pack(side="left")
+        item_description_entry = tk.Entry(frame_item_description)
+        item_description_entry.pack(side="left")
+
+        # Item qty widgets
+        tk.Label(frame_item_qty,text="Enter qty:").pack(side="left")
+        item_qty_entry = tk.Entry(frame_item_qty)
+        item_qty_entry.pack(side="left")
+
+        # Item qty error message
+        item_qty_error = tk.Label(frame_item_qty,text="")
+        item_qty_error.pack(side="left")
+
+        # Item location widgets
+        tk.Label(frame_item_location,text="Enter location (ex:'102')").pack(side="left")
+        item_location_entry = tk.Entry(frame_item_location)
+        item_location_entry.pack(side="left")
+
+        # Item location error message
+        item_location_error = tk.Label(frame_item_location,text="")
+        item_location_error.pack(side="left")
+
+        # Cancel Button
+        tk.Button(frame_action_buttons,text="Cancel",command=cancel).pack(padx=5,side="left")
+        # Submit Button
+        tk.Button(frame_action_buttons,text="Submit",command=on_submit).pack(padx=5,side="left")
+
+        item_name_entry.focus_set()
+
+    def modify_item_popup(self):
+        popup = tk.Toplevel(self._screen)
+        popup.title("Modify Item")
         popup.geometry("450x300")
         # Various frames needed 
         frame_item_name = tk.Frame(popup)
