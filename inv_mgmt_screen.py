@@ -55,18 +55,31 @@ class Inv_Mgmt_Screen(screen.Screen):
 
     # Buttons
     def modify_item_button(self):
-        def valid_entry(string):
-            pass
-
+        
+        def get_item_number(selected_entry):
+            selected_entry = selected_entry.split('.')
+            item_number = str(int(selected_entry[0])) # Typecasted twice to remove leading zeros
+            return item_number
 
         selected = self._inv_results_listbox.curselection() # Set variable to selected of list box
         if selected: # There is something selected
-            selected = selected[0]
-            self.modify_item_popup()
+            index = selected[0]
+            if index != 0: # Not a valid selected result because its the header result
+                selected = self._inv_results_listbox.get(index)
+                if '.' in selected:
+                    selected = get_item_number(selected)
+                    self.modify_item_popup(selected)
+                
+                else:
+                    messagebox.showwarning("You must choose an item from inventory to modify")
+
+            else:
+                messagebox.showwarning("You must choose an item from inventory to modify")
+
+            
         else: # Nothing is selected
             messagebox.showwarning("No Item Selected","You need to have an item selected to modify its details!")
             
-
     def add_item_button(self):
         self.add_item_popup()
 
@@ -163,7 +176,7 @@ class Inv_Mgmt_Screen(screen.Screen):
             if entry_to_focus != None:
                 entry_to_focus.focus_set()
 
-        def cancel():
+        def on_cancel():
             popup.destroy()
         
         def on_submit():
@@ -263,13 +276,73 @@ class Inv_Mgmt_Screen(screen.Screen):
         item_location_error.pack(side="left")
 
         # Cancel Button
-        tk.Button(frame_action_buttons,text="Cancel",command=cancel).pack(padx=5,side="left")
+        tk.Button(frame_action_buttons,text="Cancel",command=on_cancel).pack(padx=5,side="left")
         # Submit Button
         tk.Button(frame_action_buttons,text="Submit",command=on_submit).pack(padx=5,side="left")
 
         item_name_entry.focus_set()
 
-    def modify_item_popup(self):
+    def modify_item_popup(self,item_number):
+        def is_valid(string):
+            return string.isalnum() and any(c.isalpha() for c in string) and string[0].isalpha()
+        
+        def on_submit():
+            item_name = item_name_entry.get().lower()
+            if len(item_name) == 0: # Item name not entered
+                config_error_label(item_name_error,"You need to enter a name for the item.",item_name_entry)
+
+            else: # Non empty entry for item name
+
+                if is_valid(item_name): #valid item name
+
+                    # check that item name not in inventory already
+                    if item_name not in inv: #  item not in inventory
+                        config_error_label(item_name_error,"")
+                        # Item name tests passed
+                        item_qty = item_qty_entry.get()
+                        item_description = item_description_entry.get()
+
+                        if item_qty.isdigit(): # Int entry
+                            # Qty tests passed
+                            config_error_label(item_qty_error,"")
+                            item_location = item_location_entry.get()
+                            if item_location.isdigit(): # item location is digit
+                                # All tests passed
+                                item_dict = {
+                                    "name":f"{item_name}",
+                                    "number":f"{int(inv.item_number_max)+1}",
+                                    "description":f"{item_description}",
+                                    "qty":f"{item_qty}",
+                                    "location":f"{item_location}"
+                                }
+                                inv.delete_item(old_item)
+                                inv.add_item(item_dict,old_item)
+                                inv.save()
+                                popup.destroy() # finished with popup
+
+                            else:
+                                config_error_label(item_location_error,"Location must be a digit representing slot.",item_location_entry)
+
+                        else:
+                            config_error_label(item_qty_error,"Qty for item must be an integer.",item_qty_entry)
+
+                    else: # item in inventory
+                        config_error_label(item_name_error,"Name is already assigned to an item",item_name_entry)
+
+                else: # non valid item name
+                    config_error_label(item_name_error,"Item name must begin with a letter, with only a-z or 0-9",item_name_entry)
+
+        def config_error_label(label,new_text,entry_to_focus=None):
+            label.config(text=new_text,fg="red")
+            if entry_to_focus != None:
+                entry_to_focus.focus_set()
+
+        def on_cancel():
+            popup.destroy()
+            
+
+        inv = inventory.Inventory()
+        item = inv[item_number]
         popup = tk.Toplevel(self._screen)
         popup.title("Modify Item")
         popup.geometry("450x300")
@@ -290,40 +363,44 @@ class Inv_Mgmt_Screen(screen.Screen):
         frame_action_buttons.pack()
 
         # Item name widgets
-        tk.Label(frame_item_name, text="Add item name: ").pack(side="left")
-        item_name_entry = tk.Entry(frame_item_name)
+        tk.Label(frame_item_name, text="Edit item name: ").pack(side="left")
+        item_name_entry = tk.Entry(frame_item_name) # Entry Widget
         item_name_entry.pack(side="left")
+        item_name_entry.insert(0,item.name)
 
         # Item Name error message
         item_name_error = tk.Label(frame_item_name,text="")
         item_name_error.pack(side="left")
 
         # Item description widgets
-        tk.Label(frame_item_description,text="Item description:").pack(side="left")
-        item_description_entry = tk.Entry(frame_item_description)
+        tk.Label(frame_item_description,text="Edit Item description:").pack(side="left")
+        item_description_entry = tk.Entry(frame_item_description) # Entry Widget
         item_description_entry.pack(side="left")
+        item_description_entry.insert(0,item.description)
 
         # Item qty widgets
-        tk.Label(frame_item_qty,text="Enter qty:").pack(side="left")
-        item_qty_entry = tk.Entry(frame_item_qty)
+        tk.Label(frame_item_qty,text="Edit qty:").pack(side="left")
+        item_qty_entry = tk.Entry(frame_item_qty) # Entry Widget
         item_qty_entry.pack(side="left")
+        item_qty_entry.insert(0,item.qty)
 
         # Item qty error message
         item_qty_error = tk.Label(frame_item_qty,text="")
         item_qty_error.pack(side="left")
 
         # Item location widgets
-        tk.Label(frame_item_location,text="Enter location (ex:'102')").pack(side="left")
-        item_location_entry = tk.Entry(frame_item_location)
+        tk.Label(frame_item_location,text="Edit location (ex:'102')").pack(side="left")
+        item_location_entry = tk.Entry(frame_item_location) # Entry Widget
         item_location_entry.pack(side="left")
+        item_location_entry.insert(0,item.location)
 
         # Item location error message
         item_location_error = tk.Label(frame_item_location,text="")
         item_location_error.pack(side="left")
 
         # Cancel Button
-        tk.Button(frame_action_buttons,text="Cancel",command=cancel).pack(padx=5,side="left")
+        tk.Button(frame_action_buttons,text="Cancel",command = on_cancel).pack(padx=5,side="left")
         # Submit Button
-        tk.Button(frame_action_buttons,text="Submit",command=on_submit).pack(padx=5,side="left")
+        tk.Button(frame_action_buttons,text="Submit",command = on_submit).pack(padx=5,side="left")
 
-        item_name_entry.focus_set()
+        old_item = item.number

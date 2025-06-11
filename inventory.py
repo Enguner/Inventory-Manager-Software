@@ -95,12 +95,17 @@ class Inventory:
             file.write(repr(self._items[entry]))
         file.close()
 
-    def add_item(self,item_dict): 
+    def add_item(self,item_dict,item_number=None): 
         # CAN RAISE ERROR
         # Should not include number as key, will be ignored
+        if item_number is not None:
+            if item_number in self:
+                raise KeyError("The system cannot contain 2 items with the same number")
+
+        else:
+            item_dict["number"] = int(self.item_number_max) + 1
         used_names = self.item_names
         
-        item_dict["number"] = int(self.item_number_max) + 1
         if item_dict["name"] not in used_names: # make sure name not repeated
             self._items[item_dict["number"]] = item.Item(item_dict)
             self.save()
@@ -154,7 +159,10 @@ class Inventory:
     def item_number_max(self):
         keys = list(self.item_numbers)
         keys.sort()
-        return keys[-1]
+        if len(keys) == 0:
+            return 0
+        else:
+            return keys[-1]
 
 
 
