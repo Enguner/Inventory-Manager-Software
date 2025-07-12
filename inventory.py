@@ -41,7 +41,6 @@ class Inventory:
                     self._items[item_dict["number"]] = item.Item(item_dict)
         Inventory._initialized = True
         
-
     def __getitem__(self,key):
         item_numbers = self.item_numbers
         if key in item_numbers:
@@ -120,7 +119,7 @@ class Inventory:
             self._items.__delitem__(number)
             self.save()
 
-    def change_item(self,number,attribute,new_val):
+    def change_item(self,old_item,new_item):
         """
         Change some attribute of an item in inventory
 
@@ -129,19 +128,15 @@ class Inventory:
             -attribute: attribute that should be changed
             -new_val: new value it should be set to
         """
-        try:
-            # remember item returned should still be a dictionary structure
-            item = self[number] # item dictionary 
-            try:
-                item[attribute] = new_val
-
-            except KeyError:
-                raise KeyError("Attribute category doesnt exsist")
-
-        except KeyError:
-            raise KeyError("Item not in inventory")
+        item_numbers = self.item_numbers
+        attributes = old_item.keys()
+        for attribute in attributes:
+            if old_item[attribute] != new_item[attribute]:
+                old_item
         
         self.save()
+
+
 
     @property
     def item_names(self):
@@ -168,76 +163,3 @@ class Inventory:
 
 
 
-# inv = Inventory()
-# if '3' in inv:
-#     print("hello")
-# else:
-#     print("no")
-"""ADD"""
-
-# # Add item test ~~~~~~~~~~~~~~~~~~~~~
-
-# item = {"name":"blueberry",
-#         "description":"its a blueberry",
-#         "qty":"1",
-#         "location":"104"}
-
-# inv.add_item(item)
-
-# # End of Add item test ~~~~~~~~~~~~~~~~~~~~~
-
-
-"""SEARCH"""
-
-
-# # Search Test ````````````````````````
-
-# # search method test
-# results = inv.search("b")
-# for entry in results:
-#     print(str(entry))
-
-# # End of Search Test ````````````````````````
-
-
-
-"""DELETE"""
-
-
-# # Delete item Test ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# # delete blueberry
-# try:
-#     name = "blueberry"
-#     inv.delete_item(name)
-# except KeyError:
-#     print(f"{name} not in inventory")
-
-# # End of Delete item Test ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-"""MODIFY"""
-
-# # Modify items Test ```````````````````````````
-# try:
-#     # search method test
-#     results = inv.search("cook")
-#     for entry in results:
-#         print(str(entry))
-
-#     name = "cookie"
-#     inv.change_item(name,"qty","2")
-#     # search method test
-#     results = inv.search("cook")
-#     for entry in results:
-#         print(str(entry))
-
-#     inv.change_item(name,"qty","5")
-#     # search method test
-#     results = inv.search("cook")
-#     for entry in results:
-#         print(str(entry))
-
-# except KeyError:
-#     print(f"You failed to modify {name}")
-
-# # End of Modify items Test ```````````````````````````

@@ -315,8 +315,7 @@ class Inv_Mgmt_Screen(screen.Screen):
                                     "qty":f"{item_qty}",
                                     "location":f"{item_location}"
                                 }
-                                inv.delete_item(old_item)
-                                inv.add_item(item_dict,old_item)
+                                inv.change_item()
                                 inv.save()
                                 popup.destroy() # finished with popup
 
