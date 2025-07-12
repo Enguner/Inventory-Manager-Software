@@ -1,1 +1,1 @@
-1,apple,fuji,1,101
+1,apple,fuji,5,102

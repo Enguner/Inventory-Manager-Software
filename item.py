@@ -1,4 +1,14 @@
 class Item:
+    """
+    Dict Structure
+        :
+        Attributes: are strings
+            number
+            name
+            description
+            qty
+            location
+    """
     def __init__(self,item_dict):
         attributes =["number","name","description","qty","location"]
         """Attributes val can be None if dict not passed in right"""
@@ -19,6 +29,14 @@ class Item:
         else:
             return None
     
+    def __contains__(self,key):
+        success = False
+        attributes = self._item_dict.keys() # list of determined attributes to record vals for
+        if key in attributes:
+            success = True
+        return success
+            
+
     @property
     def name(self):
         return self._item_dict["name"]
@@ -38,6 +56,7 @@ class Item:
     @property
     def location(self):
         return self._item_dict["location"]
+
 
     def __repr__(self):
         attributes =["number","name","description","qty","location"]

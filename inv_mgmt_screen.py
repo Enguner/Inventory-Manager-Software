@@ -47,6 +47,7 @@ class Inv_Mgmt_Screen(screen.Screen):
         self._inv_entry.focus_set()
 
     def clear(self):
+        self._inv_entry.delete(0,tk.END)
         self._inv_results_listbox.delete(0,tk.END)
 
 
@@ -69,6 +70,8 @@ class Inv_Mgmt_Screen(screen.Screen):
                 if '.' in selected:
                     selected = get_item_number(selected)
                     self.modify_item_popup(selected)
+                    self.clear()
+
                 
                 else:
                     messagebox.showwarning("You must choose an item from inventory to modify")
@@ -310,12 +313,13 @@ class Inv_Mgmt_Screen(screen.Screen):
                                 # All tests passed
                                 item_dict = {
                                     "name":f"{item_name}",
-                                    "number":f"{int(inv.item_number_max)+1}",
                                     "description":f"{item_description}",
                                     "qty":f"{item_qty}",
                                     "location":f"{item_location}"
                                 }
-                                inv.change_item()
+                                item_number = item_number_entry.get()
+                                item_to_change = inv[item_number]
+                                inv.change_item(item_to_change,item_dict)
                                 inv.save()
                                 popup.destroy() # finished with popup
 
@@ -345,7 +349,11 @@ class Inv_Mgmt_Screen(screen.Screen):
         popup = tk.Toplevel(self._screen)
         popup.title("Modify Item")
         popup.geometry("450x300")
+        
         # Various frames needed 
+        frame_item_number = tk.Frame(popup)
+        frame_item_number.pack()
+        
         frame_item_name = tk.Frame(popup)
         frame_item_name.pack()
 
@@ -360,6 +368,13 @@ class Inv_Mgmt_Screen(screen.Screen):
 
         frame_action_buttons = tk.Frame(popup)
         frame_action_buttons.pack()
+
+        # Item number
+        tk.Label(frame_item_number, text="item number: ").pack(side="left")
+        item_number_entry = tk.Entry(frame_item_number) # Entry Widget
+        item_number_entry.pack(side="left")
+        item_number_entry.insert(0,item.number)
+        item_number_entry.config(state="readonly")  # Makes it uneditable
 
         # Item name widgets
         tk.Label(frame_item_name, text="Edit item name: ").pack(side="left")
@@ -401,5 +416,3 @@ class Inv_Mgmt_Screen(screen.Screen):
         tk.Button(frame_action_buttons,text="Cancel",command = on_cancel).pack(padx=5,side="left")
         # Submit Button
         tk.Button(frame_action_buttons,text="Submit",command = on_submit).pack(padx=5,side="left")
-
-        old_item = item.number

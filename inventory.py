@@ -119,7 +119,7 @@ class Inventory:
             self._items.__delitem__(number)
             self.save()
 
-    def change_item(self,old_item,new_item):
+    def change_item(self,old_item,item_dict):
         """
         Change some attribute of an item in inventory
 
@@ -128,15 +128,17 @@ class Inventory:
             -attribute: attribute that should be changed
             -new_val: new value it should be set to
         """
-        item_numbers = self.item_numbers
-        attributes = old_item.keys()
+        attributes = item_dict.keys() # Create a list of categories to augment
         for attribute in attributes:
-            if old_item[attribute] != new_item[attribute]:
-                old_item
-        
+            attribute = attribute.lower() # simple checking that key is lower-case
+            if attribute in old_item: # Should check via __contains__ in item class
+                if attribute == 'number': # attribute number is not meant to be mutated
+                    pass
+                else:
+                    old_item[attribute] = item_dict[attribute]
+            else:
+                raise KeyError(f"This category of information is not meant to be kept in item objects ['{attribute}']")
         self.save()
-
-
 
     @property
     def item_names(self):
@@ -145,7 +147,6 @@ class Inventory:
             names.append(entry["name"])
         return names
         
-    
     @property
     def item_numbers(self):
         return self._items.keys()
