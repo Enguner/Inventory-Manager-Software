@@ -1,1 +1,4 @@
 1,apple,fuji,5,102
+2,tissuepaper,white tissue paper,7,0
+3,glassescase,my glasses case,1,0
+4,pencil,#2,2,0

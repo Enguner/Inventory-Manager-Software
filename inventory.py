@@ -102,7 +102,7 @@ class Inventory:
                 raise KeyError("The system cannot contain 2 items with the same number")
 
         else:
-            item_dict["number"] = int(self.item_number_max) + 1
+            item_dict["number"] = str(int(self.item_number_max) + 1)
         used_names = self.item_names
         
         if item_dict["name"] not in used_names: # make sure name not repeated
